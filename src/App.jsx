@@ -1,3 +1,4 @@
+import React, { Suspense } from "react";
 import "./App.css";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { useLoadUserQuery } from "@/features/api/authApi";
