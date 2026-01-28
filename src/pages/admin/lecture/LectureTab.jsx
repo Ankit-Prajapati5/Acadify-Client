@@ -142,18 +142,20 @@ const LectureTab = () => {
             />
           </div>
 
-          <div className="flex items-center justify-between p-4 bg-zinc-50 rounded-xl">
-            <div className="flex items-center gap-2">
-              <Smartphone size={16} />
-              <p className="text-xs font-bold">
-                Free Preview
-              </p>
-            </div>
-            <Switch
-              checked={isPreviewFree}
-              onCheckedChange={setIsPreviewFree}
-            />
-          </div>
+          {/* Free Preview Section Fix */}
+<div className="flex items-center justify-between p-4 bg-zinc-50 dark:bg-zinc-800/50 rounded-xl border dark:border-zinc-700">
+  <div className="flex items-center gap-2 text-zinc-900 dark:text-zinc-100">
+    <Smartphone size={16} className="text-blue-600 dark:text-blue-400" />
+    <p className="text-xs font-bold uppercase tracking-tight">
+      Free Preview
+    </p>
+  </div>
+  <Switch
+    checked={isPreviewFree}
+    onCheckedChange={setIsPreviewFree}
+    className="data-[state=checked]:bg-blue-600"
+  />
+</div>
         </div>
 
         {/* RIGHT */}

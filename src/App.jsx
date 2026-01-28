@@ -64,11 +64,11 @@ const appRouter = createBrowserRouter([
       
       {path:"/about", element:<AboutUs />},
       {path:"/contact", element:<ContactUs />},
-         {path:"/privacy-policy", element:<PrivacyPolicy />},
-         {path:"/terms-conditions", element:<TermsAndConditions/>},
-         {path:"/refund-policy", element:<RefundPolicy/>},
-         {path:"/explore-courses", element:<ExploreCourses/>},
-         {path:"/roadmap-requests", element:<RoadmapAndRequests/>},
+      {path:"/privacy-policy", element:<PrivacyPolicy />},
+      {path:"/terms-conditions", element:<TermsAndConditions/>},
+      {path:"/refund-policy", element:<RefundPolicy/>},
+      {path:"/explore-courses", element:<ExploreCourses/>},
+      {path:"/roadmap-requests", element:<RoadmapAndRequests/>},
          
 
       // ================= STUDENT (LOGIN REQUIRED) =================
@@ -81,7 +81,6 @@ const appRouter = createBrowserRouter([
             path: "course/:courseId/lecture/:lectureId",
             element: <LecturePlayer />,
           },
-
           { path: "course/:courseId/progress", element: <CourseProgress /> },
         ],
       },
@@ -112,9 +111,12 @@ const appRouter = createBrowserRouter([
 ]);
 
 function App() {
-  const { isLoading } = useLoadUserQuery();
+  // 🔥 isFetching add kiya hai taaki authentication change hone par app wait kare
+  const { isLoading, isFetching } = useLoadUserQuery();
 
-  // 🔥 Auth hydration guard (VERY IMPORTANT)
+  // 🛡️ Auth hydration guard
+  // Jab tak system check kar raha hai ki user logged in hai ya nahi, 
+  // tab tak LoadingSpinner dikhega. Isse "Guest UI" flash nahi hoga.
   if (isLoading) {
     return <LoadingSpinner />;
   }

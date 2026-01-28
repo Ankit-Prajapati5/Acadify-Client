@@ -1,13 +1,10 @@
-import { createApi } from "@reduxjs/toolkit/query/react";
 import { baseApi } from "./baseApi";
 import { userLoggedIn, userLoggedOut } from "../authSlice";
 
-export const authApi = createApi({
-  reducerPath: "authApi",
-  baseQuery: baseApi,
-  tagTypes: ["User"],
-
+export const authApi = baseApi.injectEndpoints({
+  // 🔥 reducerPath, baseQuery aur tagTypes ab baseApi sambhal raha hai
   endpoints: (builder) => ({
+    
     /* ================= REGISTER ================= */
     register: builder.mutation({
       query: (data) => ({
@@ -27,11 +24,11 @@ export const authApi = createApi({
       async onQueryStarted(_, { dispatch, queryFulfilled }) {
         try {
           const { data } = await queryFulfilled;
-          // ✅ Pehle login state update karo (data controller se mil raha hai)
+          // Pehle login state update karo
           dispatch(userLoggedIn({ user: data.user }));
           
-          // 🔥 Phir poora profile load karo (roles aur extra details ke liye)
-          dispatch(authApi.endpoints.loadUser.initiate({}, { forceRefetch: true }));
+          // 🔥 Load user profile for roles
+          dispatch(baseApi.endpoints.loadUser.initiate({}, { forceRefetch: true }));
         } catch (err) {
           console.error("Login Error:", err);
         }
@@ -39,24 +36,30 @@ export const authApi = createApi({
     }),
 
     /* ================= LOGOUT ================= */
-    logout: builder.mutation({
-      query: () => ({
-        url: "/user/logout",
-        method: "POST",
-      }),
-      async onQueryStarted(_, { dispatch, queryFulfilled }) {
-        try {
-          await queryFulfilled;
-          dispatch(userLoggedOut());
-          // 🧹 Purana saara data clear karo
-          dispatch(authApi.util.resetApiState());
-        } catch (err) {
-          console.error("Logout Error:", err);
-        }
-      },
-    }),
-  
-// 3. Send OTP (For both Signup and Forget Password)
+   
+logout: builder.mutation({
+  query: () => ({
+    url: "/user/logout",
+    method: "POST",
+  }),
+  async onQueryStarted(_, { dispatch, queryFulfilled }) {
+    try {
+      await queryFulfilled;
+      // ✅ Redux state clear karein
+      dispatch(userLoggedOut());
+      // 🧹 Saara cache delete karein (VVIP for Mobile)
+      setTimeout(() => {
+        dispatch(baseApi.util.resetApiState());
+      }, 100); 
+    } catch (err) {
+      console.error("Logout Error:", err);
+      // Fallback: Agar network error bhi aaye, tab bhi local logout kar dein
+      dispatch(userLoggedOut());
+    }
+  },
+}),
+
+    /* ================= SEND OTP ================= */
     sendOtp: builder.mutation({
       query: (email) => ({
         url: "/user/send-otp",
@@ -65,7 +68,7 @@ export const authApi = createApi({
       }),
     }),
 
-    // 4. Reset Password (OTP based)
+    /* ================= RESET PASSWORD ================= */
     resetPassword: builder.mutation({
       query: (data) => ({
         url: "/user/reset-password",
@@ -85,7 +88,7 @@ export const authApi = createApi({
             dispatch(userLoggedIn({ user: data.user }));
           }
         } catch (err) {
-          // 401 handle silently - user not logged in
+          // No action needed if not logged in
         }
       },
     }),
@@ -96,13 +99,11 @@ export const authApi = createApi({
         url: "/user/profile",
         method: "PUT",
         body: formData,
-        // Note: FormData use ho raha hai isliye headers baseApi handle karega
       }),
       invalidatesTags: ["User"],
       async onQueryStarted(_, { dispatch, queryFulfilled }) {
         try {
           const { data } = await queryFulfilled;
-          // 🔥 VVIP FIX: Update Redux store with NEW user data (photo/name)
           if (data?.user) {
             dispatch(userLoggedIn({ user: data.user }));
           }
@@ -112,6 +113,7 @@ export const authApi = createApi({
       },
     }),
   }),
+  overrideExisting: false,
 });
 
 export const {

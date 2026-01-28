@@ -1,49 +1,62 @@
-import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { baseApi } from "./baseApi";
 
-export const roadmapApi = createApi({
-    reducerPath: "roadmapApi",
-    baseQuery: baseApi,
-    tagTypes: ["Roadmap"],
+export const roadmapApi = baseApi.injectEndpoints({
+    // 🔥 reducerPath, baseQuery aur tagTypes ab baseApi handle kar raha hai
     endpoints: (builder) => ({
+        
+        /* ================= GET ROADMAP ================= */
         getRoadmap: builder.query({
             query: () => "/roadmap",
             providesTags: ["Roadmap"],
         }),
-        suggestIdea: builder.mutation({
-    // Isse dhyan se dekho, yahan "/roadmap/suggest" hona chahiye
-    query: (data) => ({ 
-        url: "/roadmap/suggest", 
-        method: "POST", 
-        body: data 
-    }),
-    invalidatesTags: ["Roadmap"],
-}),
-toggleUpvote: builder.mutation({
-    // Yahan bhi "/roadmap/upvote/..." hona chahiye
-    query: (ideaId) => ({ 
-        url: `/roadmap/upvote/${ideaId}`, 
-        method: "PUT" 
-    }),
-    invalidatesTags: ["Roadmap"],
-}),
 
-deleteIdea: builder.mutation({
-    query: (id) => ({ 
-        url: `/roadmap/delete/${id}`, // matches backend route
-        method: "DELETE" 
+        /* ================= SUGGEST IDEA ================= */
+        suggestIdea: builder.mutation({
+            query: (data) => ({ 
+                url: "/roadmap/suggest", 
+                method: "POST", 
+                body: data 
+            }),
+            // 🔥 Naya idea aate hi list refresh hogi
+            invalidatesTags: ["Roadmap"],
+        }),
+
+        /* ================= TOGGLE UPVOTE ================= */
+        toggleUpvote: builder.mutation({
+            query: (ideaId) => ({ 
+                url: `/roadmap/upvote/${ideaId}`, 
+                method: "PUT" 
+            }),
+            // 🔥 Upvote count turant badal jayega
+            invalidatesTags: ["Roadmap"],
+        }),
+
+        /* ================= DELETE IDEA ================= */
+        deleteIdea: builder.mutation({
+            query: (id) => ({ 
+                url: `/roadmap/delete/${id}`, 
+                method: "DELETE" 
+            }),
+            invalidatesTags: ["Roadmap"],
+        }),
+
+        /* ================= EDIT IDEA ================= */
+        editIdea: builder.mutation({
+            query: ({ id, title, tag }) => ({ 
+                url: `/roadmap/edit/${id}`, 
+                method: "PUT", 
+                body: { title, tag } 
+            }),
+            invalidatesTags: ["Roadmap"],
+        }),
     }),
-    invalidatesTags: ["Roadmap"],
-}),
-editIdea: builder.mutation({
-    query: ({ id, title, tag }) => ({ 
-        url: `/roadmap/edit/${id}`, // matches backend route
-        method: "PUT", 
-        body: { title, tag } 
-    }),
-    invalidatesTags: ["Roadmap"],
-}),
-    }),
+    overrideExisting: false,
 });
 
-export const { useGetRoadmapQuery, useSuggestIdeaMutation, useToggleUpvoteMutation,useDeleteIdeaMutation,useEditIdeaMutation } = roadmapApi;
+export const { 
+    useGetRoadmapQuery, 
+    useSuggestIdeaMutation, 
+    useToggleUpvoteMutation,
+    useDeleteIdeaMutation,
+    useEditIdeaMutation 
+} = roadmapApi;

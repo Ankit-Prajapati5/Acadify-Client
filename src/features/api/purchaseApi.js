@@ -1,11 +1,8 @@
-import { createApi } from "@reduxjs/toolkit/query/react";
 import { baseApi } from "./baseApi";
 
-export const purchaseApi = createApi({
-  reducerPath: "purchaseApi",
-  baseQuery: baseApi,
-  tagTypes: ["Purchase", "Course"], // 🔥 Course tag bhi add kiya
-
+// 🔥 Fix: createApi ki jagah baseApi.injectEndpoints use karein 
+// taaki Tags (Course, Purchase) pure app mein share ho sakein
+export const purchaseApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
 
     /* ==============================
@@ -17,7 +14,9 @@ export const purchaseApi = createApi({
         method: "POST",
         body: { courseId },
       }),
-      // 🔥 Purchase ke baad cache refresh hoga
+      // 🔥 Sabse important part: 
+      // Ye "Course" tag invalidate karega jo CourseDetail page use kar raha hai.
+      // Isse button instant "Continue Course" mein badal jayega.
       invalidatesTags: ["Purchase", "Course"],
     }),
 
@@ -25,9 +24,10 @@ export const purchaseApi = createApi({
        CHECK PURCHASE STATUS
     ============================== */
     checkCoursePurchase: builder.query({
-      query: (courseId) =>
-        `/course-purchase/check/${courseId}`,
-      providesTags: ["Purchase"],
+      query: (courseId) => `/course-purchase/check/${courseId}`,
+      providesTags: (result, error, courseId) => [
+        { type: "Purchase", id: courseId }
+      ],
     }),
 
     /* ==============================
@@ -39,6 +39,8 @@ export const purchaseApi = createApi({
     }),
 
   }),
+  // Purane code se override na ho isliye overrideExisting use karein
+  overrideExisting: false, 
 });
 
 export const {

@@ -1,13 +1,15 @@
 import { useParams, useNavigate } from "react-router-dom";
-import { BadgeInfo, Calendar, Users, PlayCircle, CheckCircle2 } from "lucide-react";
+import { Users, CheckCircle2, Loader2 } from "lucide-react";
 import { useEffect, useState } from "react";
+import { useSelector } from "react-redux"; // 🔥 Added
+import { toast } from "sonner";
 
 import BuyCourseButton from "@/components/BuyCourseButton";
 import Loader from "@/components/Loader";
 import LectureList from "@/components/LectureList";
 
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardFooter } from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 
 import { useGetPublicCourseByIdQuery } from "@/features/api/courseApi";
@@ -16,16 +18,48 @@ import { useLoadUserQuery } from "@/features/api/authApi";
 const CourseDetail = () => {
   const { id: courseId } = useParams();
   const navigate = useNavigate();
+  const { user } = useSelector((state) => state.auth); // 🔥 Get current user
+  const [isProcessing, setIsProcessing] = useState(false);
 
-  const { data, isLoading, isError, refetch } = useGetPublicCourseByIdQuery(courseId);
+  // 🔥 Fix 1: isFetching add kiya taaki "Flash" issue solve ho sake
+  const { data, isLoading, isError, refetch, isFetching } = useGetPublicCourseByIdQuery(courseId, {
+    refetchOnMountOrArgChange: true,
+  });
+  
   const course = data?.course;
   const { refetch: refetchProfile } = useLoadUserQuery();
+
+  // 🔥 Fix 2: Jab user badle (login/logout), tab instant refetch ho
   useEffect(() => {
-    if (courseId) {
-      refetch();
-      refetchProfile();
+    refetch();
+    refetchProfile();
+  }, [user?._id, courseId, refetch, refetchProfile]);
+
+  const handlePaymentSuccess = async () => {
+    setIsProcessing(true);
+    const loadingToast = toast.loading("Confirming your purchase...");
+    try {
+      // 1.5s delay for backend processing
+      await new Promise((resolve) => setTimeout(resolve, 1000)); 
+      
+      const res = await refetch().unwrap();
+      await refetchProfile().unwrap();
+
+      // Check if purchase is actually reflected in new data
+      if(res.course.isPurchased) {
+        toast.dismiss(loadingToast);
+        toast.success("Success! You have full access now. 🎉");
+      } else {
+        // Fallback: If still not updated, reload
+        window.location.reload();
+      }
+    } catch (err) {
+      toast.dismiss(loadingToast);
+      window.location.reload();
+    } finally {
+      setIsProcessing(false);
     }
-  }, [courseId, refetch, refetchProfile]);
+  };
 
   if (isLoading) return <Loader />;
 
@@ -41,16 +75,15 @@ const CourseDetail = () => {
   }
 
   const { lectures = [], isPurchased = false, studentsEnrolled = 0 } = course;
-  const formattedDate = course.updatedAt ? new Date(course.updatedAt).toLocaleDateString("en-IN", { year: "numeric", month: "long", day: "numeric" }) : "N/A";
 
   const continueCourseHandler = () => {
     navigate(`/course/${courseId}/progress`);
   };
 
   return (
-    <div className="bg-[#f1f5f9] dark:bg-zinc-950 min-h-screen lg:h-screen w-full pt-20 lg:pt-24 flex flex-col overflow-x-hidden relative font-sans">
+    // 🔥 Fix 3: Added 'key' based on user ID. User badalte hi pura component fresh reload hoga.
+    <div key={user?._id || "guest"} className="bg-[#f1f5f9] dark:bg-zinc-950 min-h-screen lg:h-screen w-full pt-20 lg:pt-24 flex flex-col overflow-x-hidden relative font-sans">
       
-      {/* Background Glow */}
       <div className="absolute top-0 left-0 w-[500px] h-[500px] bg-blue-500/5 blur-[120px] rounded-full -z-0 pointer-events-none" />
 
       <div className="max-w-[1600px] mx-auto w-full flex-1 grid grid-cols-1 lg:grid-cols-12 gap-0 overflow-y-auto lg:overflow-hidden relative z-10 no-scrollbar">
@@ -58,7 +91,6 @@ const CourseDetail = () => {
         {/* MAIN CONTENT AREA */}
         <div className="lg:col-span-8 h-full lg:overflow-y-auto px-4 md:px-10 lg:px-16 py-6 lg:py-10 no-scrollbar flex flex-col scroll-smooth">
           
-          {/* 1. HERO TITLE */}
           <section className="space-y-4 animate-in fade-in slide-in-from-top duration-700 mb-8">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-600 dark:text-blue-400 text-[10px] font-black uppercase tracking-widest">
               <CheckCircle2 size={12} /> Expert-Led Program
@@ -83,7 +115,7 @@ const CourseDetail = () => {
             </div>
           </section>
 
-          {/* 2. MOBILE ONLY PURCHASE CARD (Order 2) */}
+          {/* MOBILE PURCHASE CARD */}
           <div className="block lg:hidden mb-8">
             <Card className="border-none bg-white dark:bg-zinc-900 rounded-[2rem] p-5 shadow-xl border border-zinc-200 dark:border-zinc-800">
                 <div className="relative aspect-video rounded-2xl overflow-hidden mb-4">
@@ -93,18 +125,22 @@ const CourseDetail = () => {
                     <h3 className="text-3xl font-black text-zinc-900 dark:text-white">
                         {course.coursePrice ? `₹${course.coursePrice}` : "FREE"}
                     </h3>
-                    {isPurchased ? (
-                        <Button className="w-full py-6 rounded-xl bg-zinc-900 dark:bg-white dark:text-black font-black" onClick={continueCourseHandler}>
-                            GO TO CLASSROOM
+                    
+                    {/* 🔥 Fix: Added isFetching & isProcessing state for instant button swap */}
+                    {(isFetching || isProcessing) ? (
+                        <Button disabled className="w-full py-6 rounded-xl bg-zinc-400 text-white font-black"><Loader2 className="animate-spin mr-2" /> UPDATING...</Button>
+                    ) : isPurchased ? (
+                        <Button className="w-full py-6 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-black uppercase tracking-widest" onClick={continueCourseHandler}>
+                            CONTINUE COURSE
                         </Button>
                     ) : (
-                        <BuyCourseButton courseId={courseId} onPaymentSuccess={() => { refetch(); refetchProfile(); }} />
+                        <BuyCourseButton courseId={courseId} onPaymentSuccess={handlePaymentSuccess} />
                     )}
                 </div>
             </Card>
           </div>
 
-          {/* 3. DESCRIPTION */}
+          {/* Description Section */}
           <section className="bg-white/50 dark:bg-zinc-900/40 p-6 lg:p-8 rounded-[2rem] border border-zinc-200/50 dark:border-zinc-800/50 mb-8">
             <h2 className="text-xl font-black mb-4 flex items-center gap-2 tracking-tighter italic uppercase">
               Description<span className="text-blue-600">.</span>
@@ -113,7 +149,7 @@ const CourseDetail = () => {
                  dangerouslySetInnerHTML={{ __html: course.description || "No description provided." }} />
           </section>
 
-          {/* 4. CURRICULUM */}
+          {/* Curriculum Section */}
           <section className="space-y-4 mb-10">
             <h2 className="text-xl font-black flex items-center gap-2 tracking-tighter italic uppercase">
               Curriculum<span className="text-orange-500">.</span>
@@ -124,7 +160,7 @@ const CourseDetail = () => {
           </section>
         </div>
 
-        {/* DESKTOP SIDEBAR (Laptop only) */}
+        {/* DESKTOP SIDEBAR */}
         <div className="hidden lg:flex lg:col-span-4 h-full bg-white/30 dark:bg-zinc-900/20 border-l border-zinc-200 dark:border-zinc-800 p-8 xl:p-12 flex-col justify-start overflow-y-auto no-scrollbar pt-10">
           <Card className="border-none bg-white dark:bg-zinc-900 rounded-[2.5rem] shadow-2xl p-6 border border-zinc-100 dark:border-zinc-800 sticky top-0">
             <div className="relative aspect-video rounded-3xl overflow-hidden shadow-lg mb-8">
@@ -139,12 +175,15 @@ const CourseDetail = () => {
               </div>
               <Separator className="bg-zinc-100 dark:bg-zinc-800" />
               <div className="space-y-3">
-                {isPurchased ? (
-                  <Button className="w-full py-8 rounded-2xl bg-zinc-900 hover:bg-black dark:bg-white dark:text-black text-sm font-black transition-all shadow-lg active:scale-95" onClick={continueCourseHandler}>
-                    GO TO CLASSROOM
+                {/* 🔥 Fix: Added isFetching & isProcessing state here too */}
+                {(isFetching || isProcessing) ? (
+                  <Button disabled className="w-full py-8 rounded-2xl bg-zinc-200 text-zinc-500 font-black"><Loader2 className="animate-spin mr-2" /> SYNCHRONIZING...</Button>
+                ) : isPurchased ? (
+                  <Button className="w-full py-8 rounded-2xl bg-zinc-900 hover:bg-black dark:bg-white dark:text-black text-sm font-black transition-all shadow-lg active:scale-95 uppercase tracking-widest" onClick={continueCourseHandler}>
+                    CONTINUE COURSE
                   </Button>
                 ) : (
-                  <BuyCourseButton courseId={courseId} onPaymentSuccess={() => { refetch(); refetchProfile(); }} />
+                  <BuyCourseButton courseId={courseId} onPaymentSuccess={handlePaymentSuccess} />
                 )}
               </div>
             </div>
@@ -153,7 +192,6 @@ const CourseDetail = () => {
 
       </div>
 
-      {/* Custom Scrollbar Hiding CSS */}
       <style>{`
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }

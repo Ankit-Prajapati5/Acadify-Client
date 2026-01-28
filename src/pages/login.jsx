@@ -10,17 +10,16 @@ import {
   useResetPasswordMutation,
 } from "@/features/api/authApi";
 import { Loader2, Mail, Lock, User, ShieldCheck, KeyRound } from "lucide-react";
-import { useState, useEffect } from "react"; // 🔥 Added useEffect
+import { useState, useEffect } from "react"; 
 import { useSelector } from "react-redux";
-import { Navigate, useNavigate, useSearchParams } from "react-router-dom"; // 🔥 Added useSearchParams
+import { Navigate, useNavigate, useSearchParams } from "react-router-dom"; 
 import { toast } from "sonner";
 
 const Login = () => {
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams(); // 🔥 URL parameters read karne ke liye
+  const [searchParams] = useSearchParams(); 
   const { isAuthenticated } = useSelector((state) => state.auth);
 
-  // Default tab "login" rahega, lekin agar URL mein tab hai toh wo uthayega
   const [activeTab, setActiveTab] = useState("login");
   const [otpSent, setOtpSent] = useState(false);
 
@@ -28,7 +27,6 @@ const Login = () => {
   const [loginInput, setLoginInput] = useState({ email: "", password: "" });
   const [forgetInput, setForgetInput] = useState({ email: "", otp: "", newPassword: "" });
 
-  // 🔥 URL change hote hi tab switch karne ka logic
   useEffect(() => {
     const tabFromUrl = searchParams.get("tab");
     if (tabFromUrl === "signup" || tabFromUrl === "login" || tabFromUrl === "forget") {
@@ -53,7 +51,7 @@ const Login = () => {
   const handleOtpRequest = async (email) => {
     if (!email) return toast.error("Please enter email first");
     try {
-      await sendOtp(email ).unwrap(); // Make sure this matches your API structure
+      await sendOtp(email).unwrap(); 
       setOtpSent(true);
       toast.success("Verification code sent to your email!");
     } catch (err) {
@@ -65,13 +63,25 @@ const Login = () => {
     try {
       if (type === "login") {
         if (!loginInput.email || !loginInput.password) return toast.error("All fields required");
-        const res = await loginUser(loginInput).unwrap();
+        
+        const loginData = {
+          ...loginInput,
+          role: loginInput.email === "officialacadify@gmail.com" ? "instructor" : "student"
+        };
+
+        const res = await loginUser(loginData).unwrap();
         toast.success(`Welcome back 🎉 ${res.user?.name || "User"}`);
         navigate("/");
       } 
       else if (type === "signup") {
         if (!signupInput.otp) return toast.error("Please verify OTP first");
-        await registerUser(signupInput).unwrap();
+        
+        const registrationData = {
+          ...signupInput,
+          role: signupInput.email === "officialacadify@gmail.com" ? "instructor" : "student"
+        };
+
+        await registerUser(registrationData).unwrap();
         toast.success("Registration successful! Please login.");
         setActiveTab("login");
         setOtpSent(false);
@@ -79,7 +89,7 @@ const Login = () => {
       else if (type === "forget") {
         if (!forgetInput.otp || !forgetInput.newPassword) return toast.error("All fields required");
         await resetPassword(forgetInput).unwrap();
-        toast.success("Password updated! Logging you in...");
+        toast.success("Password updated! Please login.");
         setActiveTab("login");
         setOtpSent(false);
       }
@@ -92,7 +102,6 @@ const Login = () => {
 
   return (
     <div className="flex items-center justify-center min-h-screen w-full bg-slate-50 dark:bg-zinc-950 p-4 transition-colors duration-500">
-      {/* Tabs value property is now controlled by activeTab state */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full max-w-[420px] transition-all duration-300">
         <TabsList className="grid w-full grid-cols-3 mb-6 p-1 bg-white dark:bg-zinc-900 shadow-sm rounded-2xl border dark:border-zinc-800">
           <TabsTrigger value="signup" className="rounded-xl font-bold text-xs uppercase">Signup</TabsTrigger>
@@ -100,7 +109,6 @@ const Login = () => {
           <TabsTrigger value="forget" className="rounded-xl font-bold text-xs uppercase">Reset</TabsTrigger>
         </TabsList>
 
-        {/* --- SIGNUP TAB --- */}
         <TabsContent value="signup">
           <Card className="border-none shadow-2xl rounded-3xl overflow-hidden dark:bg-zinc-900">
             <CardHeader className="text-center pb-2">
@@ -122,7 +130,7 @@ const Login = () => {
                     <Mail className="absolute left-3 top-3 text-zinc-400" size={16} />
                     <Input name="email" value={signupInput.email} onChange={(e) => changeInputHandler(e, "signup")} className={inputClass} placeholder="name@email.com" />
                   </div>
-                  <Button disabled={isOtpLoading} type="button" onClick={() => handleOtpRequest(signupInput.email)} variant="secondary" className="rounded-xl text-[10px] font-bold uppercase h-11 dark:bg-zinc-800 dark:hover:bg-zinc-700">
+                  <Button disabled={isOtpLoading} type="button" onClick={() => handleOtpRequest(signupInput.email)} variant="secondary" className="rounded-xl text-[10px] font-bold uppercase h-11 dark:bg-zinc-800">
                     {isOtpLoading ? <Loader2 className="animate-spin" size={14} /> : "Get OTP"}
                   </Button>
                 </div>
@@ -152,7 +160,6 @@ const Login = () => {
           </Card>
         </TabsContent>
 
-        {/* --- LOGIN TAB --- */}
         <TabsContent value="login">
           <Card className="border-none shadow-2xl rounded-3xl dark:bg-zinc-900">
             <CardHeader className="text-center pb-2">
@@ -185,7 +192,6 @@ const Login = () => {
           </Card>
         </TabsContent>
 
-        {/* --- FORGET TAB --- */}
         <TabsContent value="forget">
           <Card className="border-none shadow-2xl rounded-3xl dark:bg-zinc-900">
             <CardHeader className="text-center pb-2">

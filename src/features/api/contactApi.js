@@ -1,9 +1,6 @@
-import { createApi } from "@reduxjs/toolkit/query/react";
 import { baseApi } from "./baseApi";
 
-export const contactApi = createApi({
-  reducerPath: "contactApi",
-  baseQuery: baseApi,
+export const contactApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     sendMessage: builder.mutation({
       query: (formData) => ({
@@ -11,8 +8,12 @@ export const contactApi = createApi({
         method: "POST",
         body: formData,
       }),
+      // Agar future mein admin panel banayenge messages dekhne ke liye,
+      // toh ye tag kaam aayega.
+      invalidatesTags: ["Contact"],
     }),
   }),
+  overrideExisting: false,
 });
 
 export const { useSendMessageMutation } = contactApi;

@@ -1,13 +1,9 @@
-import { createApi } from "@reduxjs/toolkit/query/react";
 import { baseApi } from "./baseApi";
 
-export const courseApi = createApi({
-  reducerPath: "courseApi",
-  baseQuery: baseApi,
-  // 🔥 Tags: Cache synchronization ke liye backbone hain
-  tagTypes: ["CreatorCourse", "Course", "Lecture", "PublishedCourse","Purchase"],
-
+export const courseApi = baseApi.injectEndpoints({
+  // 🔥 reducerPath, baseQuery aur tagTypes ab baseApi sambhal raha hai
   endpoints: (builder) => ({
+    
     /* ================= 👨‍🏫 CREATOR ENDPOINTS ================= */
     
     createCourse: builder.mutation({
@@ -21,7 +17,6 @@ export const courseApi = createApi({
 
     getCreatorCourse: builder.query({
       query: () => "/course/creator",
-      // List refresh ke liye
       providesTags: ["CreatorCourse"],
     }),
 
@@ -36,7 +31,6 @@ export const courseApi = createApi({
         method: "PUT",
         body: formData,
       }),
-      // 🔥 Sabhi relevant views update honge
       invalidatesTags: (result, error, { courseId }) => [
         "CreatorCourse",
         "PublishedCourse",
@@ -90,42 +84,40 @@ export const courseApi = createApi({
 
     /* ================= 📖 LECTURE ENDPOINTS ================= */
     
-   createLecture: builder.mutation({
-  query: ({ courseId, lectureTitle, videoId, isPreviewFree }) => ({
-    url: `/course/${courseId}/lecture`,
-    method: "POST",
-    body: { lectureTitle, videoId, isPreviewFree },
-  }),
-  invalidatesTags: (result, error, { courseId }) => [
-    { type: "Course", id: courseId },
-  ],
-}),
-
+    createLecture: builder.mutation({
+      query: ({ courseId, lectureTitle, videoId, isPreviewFree }) => ({
+        url: `/course/${courseId}/lecture`,
+        method: "POST",
+        body: { lectureTitle, videoId, isPreviewFree },
+      }),
+      invalidatesTags: (result, error, { courseId }) => [
+        { type: "Course", id: courseId },
+      ],
+    }),
 
     getCourseLecture: builder.query({
       query: (courseId) => `/course/${courseId}/lecture`,
       providesTags: (result, error, courseId) => [{ type: "Course", id: courseId }],
     }),
 
-   getLectureById: builder.query({
-  query: ({ courseId, lectureId }) => `/course/${courseId}/lecture/${lectureId}`,
+    getLectureById: builder.query({
+      query: ({ courseId, lectureId }) => `/course/${courseId}/lecture/${lectureId}`,
       providesTags: (result, error, lectureId) => [
         { type: "Lecture", id: lectureId },
       ],
     }),
 
-  editLecture: builder.mutation({
-  query: ({ courseId, lectureId, data }) => ({
-    url: `/course/${courseId}/lecture/${lectureId}`,
-    method: "PUT",
-    body: data,
-  }),
-  invalidatesTags: (result, error, { courseId, lectureId }) => [
-    { type: "Lecture", id: lectureId },
-    { type: "Course", id: courseId },
-  ],
-}),
-
+    editLecture: builder.mutation({
+      query: ({ courseId, lectureId, data }) => ({
+        url: `/course/${courseId}/lecture/${lectureId}`,
+        method: "PUT",
+        body: data,
+      }),
+      invalidatesTags: (result, error, { courseId, lectureId }) => [
+        { type: "Lecture", id: lectureId },
+        { type: "Course", id: courseId },
+      ],
+    }),
 
     removeLecture: builder.mutation({
       query: ({ courseId, lectureId }) => ({
@@ -136,30 +128,24 @@ export const courseApi = createApi({
         { type: "Course", id: courseId },
       ],
     }),
-    /* ================= 📺 STREAM & PLAYER ================= */
-//    streamLecture: builder.query({
-//   query: ({ courseId, lectureId }) => ({
-//     // Yahan URL check karein, kya ye backend ke route se match kar raha hai?
-//     url: `/course/${courseId}/lecture/${lectureId}/stream`, 
-//     method: "GET",
-//   }),
-// }),
+
     /* ================= 📺 SPECIAL QUERIES ================= */
 
     getCourseDetailWithLessons: builder.query({
       query: (courseId) => `/course/${courseId}`,
       providesTags: (result, error, courseId) => [{ type: "Course", id: courseId }],
     }),
-    // features/api/courseApi.js
-getDashboardStats: builder.query({
-  query: () => ({
-    url: "/course/purchase/stats",
-    method: "GET",
+
+    getDashboardStats: builder.query({
+      query: () => ({
+        url: "/course/purchase/stats",
+        method: "GET",
+      }),
+      // 🔥 MAGIC: Jab purchaseApi se purchase hogi, ye stats automatically refresh honge
+      providesTags: ["Purchase"], 
+    }),
   }),
-  // Isse dashboard automatically refresh hoga jab bhi koi new purchase hogi
-  providesTags: ["Purchase"], 
-}),
-  }),
+  overrideExisting: false,
 });
 
 export const {
@@ -178,6 +164,5 @@ export const {
   useRemoveLectureMutation,
   useGetCreatorCourseByIdQuery,
   useGetCourseDetailWithLessonsQuery,
-  // useLazyStreamLectureQuery,
   useGetDashboardStatsQuery,
 } = courseApi;

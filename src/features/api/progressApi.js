@@ -1,11 +1,7 @@
-import { createApi } from "@reduxjs/toolkit/query/react";
 import { baseApi } from "./baseApi";
 
-export const progressApi = createApi({
-  reducerPath: "progressApi",
-  baseQuery: baseApi,
-  tagTypes: ["Progress", "Course"], // 🔥 Course add kiya (safe sync)
-
+export const progressApi = baseApi.injectEndpoints({
+  // 🔥 reducerPath, baseQuery aur tagTypes ab baseApi sambhal raha hai
   endpoints: (builder) => ({
 
     /* ================= GET PROGRESS ================= */
@@ -22,6 +18,7 @@ export const progressApi = createApi({
         url: `/progress/${courseId}/lecture/${lectureId}`,
         method: "POST",
       }),
+      // 🔥 Isse progress query automatic refresh hogi
       invalidatesTags: (result, error, { courseId }) => [
         { type: "Progress", id: courseId },
       ],
@@ -39,6 +36,7 @@ export const progressApi = createApi({
     }),
 
   }),
+  overrideExisting: false,
 });
 
 export const {

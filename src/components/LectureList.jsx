@@ -83,11 +83,11 @@ const LectureList = ({ lectures = [], courseId, isPurchased }) => {
                 }}
                 className="bg-blue-600 hover:bg-blue-700 text-white font-black uppercase text-[10px] tracking-tighter px-4 rounded-xl shadow-lg shadow-blue-500/20 transition-transform active:scale-95"
               >
-                <PlayCircle size={14}/>Play
+                <PlayCircle size={14} className="mr-1"/> Play
               </Button>
             )}
 
-            {/* Locked Icon for Right Side (Halka Effect) */}
+            {/* Locked Icon for Right Side */}
             {isLocked && (
                <Lock className="text-zinc-300 dark:text-zinc-700" size={16} />
             )}
@@ -95,7 +95,8 @@ const LectureList = ({ lectures = [], courseId, isPurchased }) => {
         );
       })}
 
-      <style jsx>{`
+      {/* 🔥 FIX: jsx attribute hata diya gaya hai */}
+      <style>{`
         .custom-scrollbar::-webkit-scrollbar { width: 4px; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: #e4e4e7; border-radius: 10px; }
         .dark .custom-scrollbar::-webkit-scrollbar-thumb { background: #27272a; }

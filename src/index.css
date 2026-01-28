@@ -180,3 +180,35 @@ video::-webkit-media-controls-panel {
     scrollbar-width: none;  /* Firefox */
   }
 }
+
+/* Hide YouTube top gradient */
+.ytp-gradient-top {
+  display: none !important;
+}
+
+/* Hide title area */
+.ytp-chrome-top {
+  display: none !important;
+}
+
+/* Hide watch later & share */
+.ytp-watch-later-button,
+.ytp-share-button {
+  display: none !important;
+}
+
+/* Hide YouTube center logo */
+.ytp-large-play-button,
+.ytp-button.ytp-youtube-button {
+  display: none !important;
+}
+
+/* Hide fullscreen button */
+.ytp-fullscreen-button {
+  display: none !important;
+}
+
+/* Remove iframe pointer interaction */
+#custom-player iframe {
+  pointer-events: none !important;
+}

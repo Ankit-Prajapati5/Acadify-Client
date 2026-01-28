@@ -3,7 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
   user: null,
   isAuthenticated: false,
-  // 🔄 Loading state add karne se flickering ruk jayegi
+  // 🔄 Default true taaki jab tak loadUser chal raha ho, app guest na mane
   isLoading: true, 
 };
 
@@ -14,16 +14,16 @@ const authSlice = createSlice({
     userLoggedIn: (state, action) => {
       state.user = action.payload.user;
       state.isAuthenticated = true;
-      state.isLoading = false; // Auth success
+      state.isLoading = false; // Data mil gaya, loading khatam
     },
 
     userLoggedOut: (state) => {
       state.user = null;
       state.isAuthenticated = false;
-      state.isLoading = false; // Auth cleared
+      state.isLoading = false; // Logout ke baad loading khatam
     },
     
-    // 🛡️ Jab loadUser query fail ho jaye (not logged in)
+    // 🛡️ Iska use hum tab karenge jab loadUser fail ho jaye
     setAuthLoading: (state, action) => {
       state.isLoading = action.payload;
     }

@@ -9,6 +9,9 @@ const Lecture = ({ lecture, index }) => {
     navigate(`/admin/course/${courseId}/lecture/${lecture._id}`);
   };
 
+  // 🔥 Fix: Check for videoId instead of videoUrl
+  const hasVideo = lecture.videoId || lecture.videoUrl; 
+
   return (
     <div className="group flex items-center justify-between bg-white dark:bg-zinc-900/50 px-4 py-4 md:px-6 rounded-2xl my-3 border border-zinc-100 dark:border-zinc-800 hover:border-blue-200 dark:hover:border-blue-900/50 hover:shadow-xl hover:shadow-blue-500/5 transition-all duration-300">
       
@@ -16,7 +19,7 @@ const Lecture = ({ lecture, index }) => {
       <div className="flex items-center gap-4">
         {/* Step Number or Icon */}
         <div className="relative flex items-center justify-center shrink-0">
-          {lecture.videoUrl ? (
+          {hasVideo ? (
             <div className="bg-green-100 dark:bg-green-900/20 p-2.5 rounded-xl">
               <PlayCircle className="text-green-600 dark:text-green-500" size={22} />
             </div>
@@ -25,7 +28,7 @@ const Lecture = ({ lecture, index }) => {
               <Lock className="text-zinc-400" size={22} />
             </div>
           )}
-          {/* Index Badge - Mobile pe helpful rehta hai sequence dekhne ke liye */}
+          
           <span className="absolute -top-2 -left-2 bg-zinc-900 dark:bg-white text-white dark:text-black text-[9px] font-black w-5 h-5 rounded-full flex items-center justify-center shadow-lg">
             {index + 1}
           </span>
@@ -42,25 +45,25 @@ const Lecture = ({ lecture, index }) => {
             <div className="flex items-center gap-1">
               {lecture.isPreviewFree ? (
                 <span className="text-[9px] font-black uppercase tracking-widest text-green-600 bg-green-50 dark:bg-green-900/10 px-2 py-0.5 rounded-md border border-green-100 dark:border-green-900/30">
-                  Free
+                  Free Preview
                 </span>
               ) : (
                 <span className="text-[9px] font-black uppercase tracking-widest text-blue-600 bg-blue-50 dark:bg-blue-900/10 px-2 py-0.5 rounded-md border border-blue-100 dark:border-blue-900/30">
-                  Paid
+                  Paid Lecture
                 </span>
               )}
             </div>
 
-            {/* Error/Success Indicator */}
-            {!lecture.videoUrl ? (
-              <div className="flex items-center gap-1 text-red-500">
+            {/* 🔥 Status Indicator Fixed */}
+            {!hasVideo ? (
+              <div className="flex items-center gap-1 text-red-500 bg-red-50 dark:bg-red-900/10 px-2 py-0.5 rounded-md border border-red-100 dark:border-red-900/30">
                 <AlertCircle size={10} />
-                <span className="text-[10px] font-bold uppercase tracking-tight">No Video</span>
+                <span className="text-[9px] font-black uppercase tracking-widest">No Video</span>
               </div>
             ) : (
-              <div className="flex items-center gap-1 text-zinc-400">
-                <CheckCircle2 size={10} className="text-green-500" />
-                <span className="text-[10px] font-medium uppercase tracking-tight">Ready</span>
+              <div className="flex items-center gap-1 text-emerald-500 bg-emerald-50 dark:bg-emerald-900/10 px-2 py-0.5 rounded-md border border-emerald-100 dark:border-emerald-900/30">
+                <CheckCircle2 size={10} />
+                <span className="text-[9px] font-black uppercase tracking-widest">Live & Ready</span>
               </div>
             )}
           </div>
