@@ -21,7 +21,8 @@ import {
   BrainCircuit,
   RotateCw,
   Loader2,
-  ScreenShare // Landscape ke liye icon
+  ScreenShare, // Landscape ke liye icon
+  RectangleHorizontal
 } from "lucide-react";
 import confetti from "canvas-confetti";
 import BuyCourseButton from "@/components/BuyCourseButton";
@@ -397,7 +398,7 @@ const LecturePlayer = () => {
                           onClick={handleLandscape} 
                           className="md:hidden p-2 bg-zinc-800 rounded-lg border border-zinc-700 text-orange-500"
                         >
-                          <RotateCw size={20} />
+                         <RectangleHorizontal size={24} strokeWidth={1.5} className="text-blue-500" />
                         </button>
                         
                         <button onClick={toggleFullscreen} className="hover:text-orange-500 transition-all"><Maximize size={24} /></button>
