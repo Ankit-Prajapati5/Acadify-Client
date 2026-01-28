@@ -19,6 +19,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
+import { authApi } from "@/features/api/authApi"; 
 
 /* ================= MOBILE NAVBAR ================= */
 const MobileNavbar = ({ user, logoutHandler, goToAuth, isLoggingOut, pathname }) => {
@@ -107,30 +108,30 @@ const Navbar = () => {
   const dispatch = useDispatch();
   const [logoutUser, { isLoading, isSuccess }] = useLogoutMutation();
 
-  const logoutHandler = async () => {
-    // 1. तुरंत Redux स्टेट साफ करें (Force Logout)
+/* ================= Navbar.jsx का logoutHandler ================= */
+const logoutHandler = async () => {
+  try {
+    // 1. बैकएंड से कुकी डिलीट करवाएं
+    await logoutUser().unwrap();
+    
+    // 2. 🔥 सबसे महत्वपूर्ण: RTK Query का पूरा डेटा मिटाएं
+    // ताकि useLoadUserQuery दोबारा पुराना डेटा न पकड़ सके
+    dispatch(authApi.util.resetApiState()); 
+    
+    // 3. Redux की मैन्युअल स्टेट साफ करें
     dispatch(userLoggedOut()); 
     
-    // 2. तुरंत नेविगेट करें
-    navigate("/login");
-
-    // 3. टोस्ट दिखाएँ
+    // 4. टोस्ट और नेविगेशन
     toast.success("Logged out successfully");
-
-    // 4. अब बैकग्राउंड में शांति से API कॉल करें
-    try {
-      await logoutUser().unwrap();
-    } catch (err) {
-      console.error("Backend logout failed, but local session cleared.");
-    }
-  };
-
-  useEffect(() => {
-    if (isSuccess) {
-      dispatch(userLoggedOut());
-      navigate("/login");
-    }
-  }, [isSuccess, dispatch, navigate]);
+    navigate("/login", { replace: true });
+    
+  } catch (err) {
+    // Error आने पर भी जबरदस्ती बाहर निकालें (Safety net)
+    dispatch(authApi.util.resetApiState());
+    dispatch(userLoggedOut());
+    navigate("/login");
+  }
+};
 
   const goToAuth = (tab) => navigate(`/login?tab=${tab}`);
 

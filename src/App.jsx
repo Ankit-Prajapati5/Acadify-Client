@@ -111,12 +111,10 @@ const appRouter = createBrowserRouter([
 ]);
 
 function App() {
-  // 🔥 isFetching add kiya hai taaki authentication change hone par app wait kare
-  const { isLoading, isFetching } = useLoadUserQuery();
+  // isLoading: पहली बार डेटा लाने के लिए
+  // isFetching: जब भी बैकग्राउंड में डेटा रिफ्रेश हो रहा हो
+  const { isLoading } = useLoadUserQuery();
 
-  // 🛡️ Auth hydration guard
-  // Jab tak system check kar raha hai ki user logged in hai ya nahi, 
-  // tab tak LoadingSpinner dikhega. Isse "Guest UI" flash nahi hoga.
   if (isLoading) {
     return <LoadingSpinner />;
   }
