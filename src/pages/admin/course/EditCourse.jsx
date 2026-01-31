@@ -7,8 +7,8 @@ const EditCourse = () => {
   return (
     <div className="flex-1 flex flex-col h-full bg-slate-50/30 dark:bg-transparent">
       
-      {/* 🚀 STICKY HEADER: Mobile par top par rahega */}
-      <div className="sticky top-0 z-30 bg-white/80 dark:bg-[#0A0A0A]/80 backdrop-blur-xl border-b border-zinc-100 dark:border-zinc-800/50 px-4 md:px-10 py-4 mb-2">
+      {/* 🚀 FIXED STICKY HEADER: Added top-16 to avoid Navbar overlap */}
+<div className="sticky top-16 md:top-0 z-30 bg-white/80 dark:bg-[#0A0A0A]/80 backdrop-blur-xl border-b border-zinc-100 dark:border-zinc-800/50 px-4 md:px-10 py-4 mb-2">
         <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           
           <div className="flex items-center gap-3">
@@ -38,7 +38,7 @@ const EditCourse = () => {
       </div>
 
       {/* 📝 COURSE CONTENT AREA */}
-      <div className="flex-1 px-0 md:px-10">
+      <div className="flex-1 px-0 md:px-10 pt-4">
         <div className="max-w-6xl mx-auto">
           <CourseTab />
         </div>

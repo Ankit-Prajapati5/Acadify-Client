@@ -129,6 +129,16 @@ export const courseApi = baseApi.injectEndpoints({
       ],
     }),
 
+     /* ================= 📺 QUIZ ================= */
+    generateQuiz: builder.mutation({
+      query: (transcript) => ({
+        url: "/quiz/generate",
+        method: "POST",
+        body: { transcript },
+      }),
+      // Quiz generate hone par agar koi specific tag reset karna ho toh:
+      invalidatesTags: ["Course"],
+    }),
     /* ================= 📺 SPECIAL QUERIES ================= */
 
     getCourseDetailWithLessons: builder.query({
@@ -165,4 +175,5 @@ export const {
   useGetCreatorCourseByIdQuery,
   useGetCourseDetailWithLessonsQuery,
   useGetDashboardStatsQuery,
+  useGenerateQuizMutation,
 } = courseApi;

@@ -184,102 +184,117 @@ const LecturePlayer = () => {
       setVaultKey(window.btoa(currentLecture.videoId));
     }
   }, [currentLecture]);
- useEffect(() => {
-  let isSecurityActive = true;
-  let securityTimers = [];
+  useEffect(() => {
+    let isSecurityActive = true;
+    let securityTimers = [];
 
-  const triggerSecurityLogout = () => {
-    if (devToolsOpen || isSecurityBreached) return;
-    setDevToolsOpen(true);
-    setIsSecurityBreached(true);
+    const triggerSecurityLogout = () => {
+      if (devToolsOpen || isSecurityBreached) return;
+      setDevToolsOpen(true);
+      setIsSecurityBreached(true);
 
-    // 💣 THE NUCLEAR BOMB - High Render Pressure
-    const radioactive = new Array(10000).fill("🚨_SYSTEM_CRITICAL_ERROR_🚨").join("");
-    
-    for (let i = 0; i < 500; i++) {
-      console.error(radioactive); // RAM Pressure
-      const heavyObj = {};
-      for(let j=0; j<200; j++) heavyObj[j] = { data: radioactive, nested: heavyObj };
-      console.dir(heavyObj); // Recursive Tree Crash
-      // SVG Graphics Overload
-      console.log("%c ", `padding:400px; background:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="2000" height="2000"><foreignObject width="100%" height="100%"><div xmlns="http://www.w3.org/1999/xhtml" style="font-size:40px">RENDER_BLOCK_ACTIVE</div></foreignObject></svg>');`);
-    }
+      // 💣 THE NUCLEAR BOMB - High Render Pressure
+      const radioactive = new Array(10000)
+        .fill("🚨_SYSTEM_CRITICAL_ERROR_🚨")
+        .join("");
 
-    if (playerRef.current) playerRef.current.destroy();
-    localStorage.clear();
-    dispatch(userLoggedOut());
-    toast.error("SECURITY ALERT: System Compromised.");
-    
-    setTimeout(() => {
-      window.location.href = "/login";
-    }, 200);
-  };
-
-  const enforceIntegrity = () => {
-    // 1. Mobile Check skip
-    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-    if (!isMobile) {
-      const heightGap = window.outerHeight - window.innerHeight;
-      const widthGap = window.outerWidth - window.innerWidth;
-      if (heightGap > 160 || widthGap > 160) triggerSecurityLogout();
-    }
-
-    // 2. Debugger/Timing Attack Trap
-    const startTime = performance.now();
-    debugger; 
-    if (performance.now() - startTime > 100) triggerSecurityLogout();
-  };
-
-  // 🛡️ THE TRAP: Recursive Proxy (DevTools khulte hi phatega)
-  const trap = new Proxy({}, {
-    get: function(target, prop) {
-      if (['id', 'nodeType', 'outerHTML', 'toString'].includes(prop)) {
-        triggerSecurityLogout();
-        return Array.from({length: 100000}, () => Math.random()).sort();
+      for (let i = 0; i < 500; i++) {
+        console.error(radioactive); // RAM Pressure
+        const heavyObj = {};
+        for (let j = 0; j < 200; j++)
+          heavyObj[j] = { data: radioactive, nested: heavyObj };
+        console.dir(heavyObj); // Recursive Tree Crash
+        // SVG Graphics Overload
+        console.log(
+          "%c ",
+          `padding:400px; background:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="2000" height="2000"><foreignObject width="100%" height="100%"><div xmlns="http://www.w3.org/1999/xhtml" style="font-size:40px">RENDER_BLOCK_ACTIVE</div></foreignObject></svg>');`,
+        );
       }
-      return target[prop];
-    }
-  });
 
-  // Start Immediate Monitoring
-  enforceIntegrity();
-  
-  // Continuous check loop
-  const intervalId = setInterval(() => {
-    console.log(trap); 
-    console.clear();
+      if (playerRef.current) playerRef.current.destroy();
+      localStorage.clear();
+      dispatch(userLoggedOut());
+      toast.error("SECURITY ALERT: System Compromised.");
+
+      setTimeout(() => {
+        window.location.href = "/login";
+      }, 200);
+    };
+
+    const enforceIntegrity = () => {
+      // 1. Mobile Check skip
+      const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+      if (!isMobile) {
+        const heightGap = window.outerHeight - window.innerHeight;
+        const widthGap = window.outerWidth - window.innerWidth;
+        if (heightGap > 160 || widthGap > 160) triggerSecurityLogout();
+      }
+
+      // 2. Debugger/Timing Attack Trap
+      const startTime = performance.now();
+      debugger;
+      if (performance.now() - startTime > 100) triggerSecurityLogout();
+    };
+
+    // 🛡️ THE TRAP: Recursive Proxy (DevTools khulte hi phatega)
+    const trap = new Proxy(
+      {},
+      {
+        get: function (target, prop) {
+          if (["id", "nodeType", "outerHTML", "toString"].includes(prop)) {
+            triggerSecurityLogout();
+            return Array.from({ length: 100000 }, () => Math.random()).sort();
+          }
+          return target[prop];
+        },
+      },
+    );
+
+    // Start Immediate Monitoring
     enforceIntegrity();
-  }, 800);
-  securityTimers.push(intervalId);
 
-  // Mutation Observer for DOM tampering
-  const observer = new MutationObserver(() => triggerSecurityLogout());
-  if (containerRef.current) {
-    observer.observe(containerRef.current, { attributes: true, childList: true, subtree: true });
-  }
+    // Continuous check loop
+    const intervalId = setInterval(() => {
+      console.log(trap);
+      console.clear();
+      enforceIntegrity();
+    }, 800);
+    securityTimers.push(intervalId);
 
-  // Blocking Key Combos
-  const keyBlock = (e) => {
-    if (
-      e.key === "F12" ||
-      (e.ctrlKey && e.shiftKey && (e.key === "I" || e.key === "J" || e.key === "C")) ||
-      (e.ctrlKey && e.key === "u")
-    ) {
-      e.preventDefault();
-      triggerSecurityLogout();
+    // Mutation Observer for DOM tampering
+    const observer = new MutationObserver(() => triggerSecurityLogout());
+    if (containerRef.current) {
+      observer.observe(containerRef.current, {
+        attributes: true,
+        childList: true,
+        subtree: true,
+      });
     }
-  };
 
-  window.addEventListener("keydown", keyBlock);
-  window.addEventListener("resize", enforceIntegrity);
+    // Blocking Key Combos
+    const keyBlock = (e) => {
+      if (
+        e.key === "F12" ||
+        (e.ctrlKey &&
+          e.shiftKey &&
+          (e.key === "I" || e.key === "J" || e.key === "C")) ||
+        (e.ctrlKey && e.key === "u")
+      ) {
+        e.preventDefault();
+        triggerSecurityLogout();
+      }
+    };
 
-  return () => {
-    securityTimers.forEach(clearInterval);
-    observer.disconnect();
-    window.removeEventListener("keydown", keyBlock);
-    window.removeEventListener("resize", enforceIntegrity);
-  };
-}, [dispatch, devToolsOpen, isSecurityBreached]);
+    window.addEventListener("keydown", keyBlock);
+    window.addEventListener("resize", enforceIntegrity);
+
+    return () => {
+      securityTimers.forEach(clearInterval);
+      observer.disconnect();
+      window.removeEventListener("keydown", keyBlock);
+      window.removeEventListener("resize", enforceIntegrity);
+    };
+  }, [dispatch, devToolsOpen, isSecurityBreached]);
   useEffect(() => {
     if (!vaultKey || isLocked || devToolsOpen || isSecurityBreached) return;
     const initPlayer = () => {
@@ -369,10 +384,10 @@ const LecturePlayer = () => {
   };
   const [isInitialLoading, setIsInitialLoading] = useState(true);
 
-useEffect(() => {
-  const timer = setTimeout(() => setIsInitialLoading(false), 3000);
-  return () => clearTimeout(timer);
-}, []);
+  useEffect(() => {
+    const timer = setTimeout(() => setIsInitialLoading(false), 3000);
+    return () => clearTimeout(timer);
+  }, []);
 
   const handleSeek = (e) => {
     const time = parseFloat(e.target.value);
@@ -472,28 +487,28 @@ useEffect(() => {
       )}
 
       {/* HEADER */}
-<div className="h-[75px] px-6 py-3 flex items-center justify-between border-b border-zinc-800 bg-black z-50 shrink-0">
-  <button
-    onClick={handleBack}
-    className="flex items-center gap-2 text-zinc-400 hover:text-white transition-colors"
-  >
-    <ArrowLeft size={18} />
-    <span className="text-sm font-medium">Back</span>
-  </button>
+      <div className="h-[75px] px-6 py-3 flex items-center justify-between border-b border-zinc-800 bg-black z-50 shrink-0">
+        <button
+          onClick={handleBack}
+          className="flex items-center gap-2 text-zinc-400 hover:text-white transition-colors"
+        >
+          <ArrowLeft size={18} />
+          <span className="text-sm font-medium">Back</span>
+        </button>
 
-  <div className="text-center hidden md:block">
-    <h2 className="text-base font-bold text-white truncate max-w-md uppercase tracking-tight">
-      {currentLecture.lectureTitle}
-    </h2>
-    <p className="text-[10px] text-zinc-500 uppercase tracking-[0.2em] mt-0.5">
-      Lecture {currentIndex + 1} of {lectures.length}
-    </p>
-  </div>
+        <div className="text-center hidden md:block">
+          <h2 className="text-base font-bold text-white truncate max-w-md uppercase tracking-tight">
+            {currentLecture.lectureTitle}
+          </h2>
+          <p className="text-[10px] text-zinc-500 uppercase tracking-[0.2em] mt-0.5">
+            Lecture {currentIndex + 1} of {lectures.length}
+          </p>
+        </div>
 
-  <div className="px-4 py-1.5 bg-zinc-900 rounded-sm border border-zinc-700 text-[11px] font-black text-red-500 uppercase tracking-widest italic shadow-lg">
-    INTEGRITY_MAX
-  </div>
-</div>
+        <div className="px-4 py-1.5 bg-zinc-900 rounded-sm border border-zinc-700 text-[11px] font-black text-red-500 uppercase tracking-widest italic shadow-lg">
+          INTEGRITY_MAX
+        </div>
+      </div>
 
       {/* PLAYER AREA */}
       <div
@@ -509,7 +524,9 @@ useEffect(() => {
             <BuyCourseButton courseId={courseId} />
           </div>
         ) : (
-         <div className={`w-full h-full relative flex items-center justify-center overflow-hidden z-0 transition-all duration-300 ${!isFullscreen ? "-mt-5" : "mt-0"}`}>
+          <div
+            className={`w-full h-full relative flex items-center justify-center overflow-hidden z-0 transition-all duration-300 ${!isFullscreen ? "-mt-5" : "mt-0"}`}
+          >
             <div
               className={`absolute w-full h-[108%] -top-[7%] transition-all duration-1000 ${isPlaying ? "opacity-100 scale-100" : "opacity-10 blur-xl scale-110"}`}
             >
@@ -540,15 +557,16 @@ useEffect(() => {
                 </p>
               </div>
             )}
-          
+
             {showBottomShield && !isNavigating && (
-              <div className={`absolute bottom-0 left-0 w-full h-20 pointer-events-none flex items-center justify-center border-t border-white/5 transition-all duration-700 animate-in fade-in slide-in-from-bottom-2 
-  ${isInitialLoading ? "bg-zinc-950" : "bg-black"}`}>
-  
-  <p className="text-[8px] font-black uppercase tracking-[0.4em] text-zinc-600">
-    🛡️ SYSTEM INTEGRITY VERIFIED • ANTI-RECORD ACTIVE
-  </p>
-</div>
+              <div
+                className={`absolute bottom-0 left-0 w-full h-20 pointer-events-none flex items-center justify-center border-t border-white/5 transition-all duration-700 animate-in fade-in slide-in-from-bottom-2 
+  ${isInitialLoading ? "bg-zinc-950" : "bg-black"}`}
+              >
+                <p className="text-[8px] font-black uppercase tracking-[0.4em] text-zinc-600">
+                  🛡️ SYSTEM INTEGRITY VERIFIED • ANTI-RECORD ACTIVE
+                </p>
+              </div>
             )}
 
             <div
@@ -694,24 +712,46 @@ useEffect(() => {
           </button>
         </div>
         <div className="flex items-center gap-4 w-full md:w-auto">
-          <button
-            onClick={() => toast.info("Quiz Engine launching soon!")}
-            className="flex-1 md:flex-none flex items-center justify-center gap-2 bg-zinc-900 hover:bg-zinc-800 text-purple-400 px-8 py-3 rounded-2xl font-bold border border-purple-500/20 active:scale-95 transition-all"
-          >
-            <BrainCircuit size={20} /> Quiz
-          </button>
-          <button
-            onClick={handleManualComplete}
-            disabled={isMarking || !isEligibleForComplete}
-            className={`flex-1 md:flex-none flex items-center justify-center gap-2 px-10 py-3 rounded-2xl font-bold active:scale-95 transition-all shadow-xl ${isEligibleForComplete ? "bg-emerald-600 hover:bg-emerald-500 text-white" : "bg-zinc-800 text-zinc-500 border border-zinc-700 cursor-not-allowed"}`}
-          >
-            {isMarking ? (
-              <Loader2 className="animate-spin" size={20} />
-            ) : (
-              <CheckCircle size={20} />
-            )}{" "}
-            {isEligibleForComplete ? "Mark Complete" : "90% Min"}
-          </button>
+          <div className="flex flex-col md:flex-row items-center gap-3 w-full md:w-auto">
+            {/* Quiz Button */}
+            <button
+              onClick={() =>
+                isEligibleForComplete &&
+                navigate(`/course/${courseId}/lecture/${lectureId}/quiz`)
+              }
+              disabled={!isEligibleForComplete}
+              className={`w-full md:w-auto flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl font-bold active:scale-95 transition-all shadow-lg text-sm md:text-base ${
+                isEligibleForComplete
+                  ? "bg-zinc-900 hover:bg-zinc-800 text-purple-400 border border-purple-500/30"
+                  : "bg-zinc-800 text-zinc-500 border border-zinc-700 cursor-not-allowed"
+              }`}
+            >
+              <BrainCircuit size={18} className="shrink-0" />
+              <span className="whitespace-nowrap">
+                {isEligibleForComplete ? "Take Quiz" : "90% Min for Quiz"}
+              </span>
+            </button>
+
+            {/* Mark Complete Button */}
+            <button
+              onClick={handleManualComplete}
+              disabled={isMarking || !isEligibleForComplete}
+              className={`w-full md:w-auto flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl font-bold active:scale-95 transition-all shadow-lg text-sm md:text-base ${
+                isEligibleForComplete
+                  ? "bg-emerald-600 hover:bg-emerald-500 text-white"
+                  : "bg-zinc-800 text-zinc-500 border border-zinc-700 cursor-not-allowed"
+              }`}
+            >
+              {isMarking ? (
+                <Loader2 className="animate-spin shrink-0" size={18} />
+              ) : (
+                <CheckCircle size={18} className="shrink-0" />
+              )}
+              <span className="whitespace-nowrap">
+                {isEligibleForComplete ? "Mark Complete" : "90% Min"}
+              </span>
+            </button>
+          </div>
         </div>
       </div>
     </div>

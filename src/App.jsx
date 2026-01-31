@@ -34,10 +34,14 @@ import AboutUs from "./pages/student/AboutUs";
 import ContactUs from "./pages/student/ContactUs";
 import PrivacyPolicy from "./pages/student/PrivacyPolicy";
 import TermsAndConditions from "./pages/student/TermsAndConditions";
-import RefundPolicy from "./pages/student/RefundPolicy"
-import ExploreCourses from "./pages/student/ExploreCourses"
-import RoadmapAndRequests from "./pages/student/RoadmapAndRequests"
+import RefundPolicy from "./pages/student/RefundPolicy";
+import ExploreCourses from "./pages/student/ExploreCourses";
+import RoadmapAndRequests from "./pages/student/RoadmapAndRequests";
 import SearchPage from "./pages/student/SearchPage";
+import QuizPreviewPage from "./pages/admin/lecture/QuizPreviewPage";
+import QuizPage from "./pages/student/QuizPage";
+import QuizResultPage from "./pages/student/QuizResultPage";
+import QuizReviewPage from "./pages/student/QuizReviewPage";
 
 const appRouter = createBrowserRouter([
   {
@@ -51,25 +55,24 @@ const appRouter = createBrowserRouter([
           <>
             <HeroSection />
             <Courses />
-            <Footer/>
+            <Footer />
           </>
         ),
       },
       { path: "login", element: <Login /> },
       { path: "course-detail/:id", element: <CourseDetail /> },
-      { 
+      {
         path: "course/search",
-        element: <SearchPage /> 
+        element: <SearchPage />,
       },
-      
-      {path:"/about", element:<AboutUs />},
-      {path:"/contact", element:<ContactUs />},
-      {path:"/privacy-policy", element:<PrivacyPolicy />},
-      {path:"/terms-conditions", element:<TermsAndConditions/>},
-      {path:"/refund-policy", element:<RefundPolicy/>},
-      {path:"/explore-courses", element:<ExploreCourses/>},
-      {path:"/roadmap-requests", element:<RoadmapAndRequests/>},
-         
+
+      { path: "/about", element: <AboutUs /> },
+      { path: "/contact", element: <ContactUs /> },
+      { path: "/privacy-policy", element: <PrivacyPolicy /> },
+      { path: "/terms-conditions", element: <TermsAndConditions /> },
+      { path: "/refund-policy", element: <RefundPolicy /> },
+      { path: "/explore-courses", element: <ExploreCourses /> },
+      { path: "/roadmap-requests", element: <RoadmapAndRequests /> },
 
       // ================= STUDENT (LOGIN REQUIRED) =================
       {
@@ -82,6 +85,18 @@ const appRouter = createBrowserRouter([
             element: <LecturePlayer />,
           },
           { path: "course/:courseId/progress", element: <CourseProgress /> },
+          {
+            path: "course/:courseId/lecture/:lectureId/quiz",
+            element: <QuizPage />,
+          },
+          {
+            path: "course/:courseId/lecture/:lectureId/quiz/result",
+            element: <QuizResultPage />,
+          },
+          {
+            path: "course/:courseId/lecture/:lectureId/quiz/review",
+            element: <QuizReviewPage />,
+          },
         ],
       },
 
@@ -93,7 +108,15 @@ const appRouter = createBrowserRouter([
           {
             element: <Sidebar />,
             children: [
-              { path: "dashboard", element:(<Suspense fallback={<LoadingSpinner />}> <Dashboard /></Suspense> )},
+              {
+                path: "dashboard",
+                element: (
+                  <Suspense fallback={<LoadingSpinner />}>
+                    {" "}
+                    <Dashboard />
+                  </Suspense>
+                ),
+              },
               { path: "course", element: <CourseTable /> },
               { path: "course/create", element: <AddCourse /> },
               { path: "course/:id", element: <EditCourse /> },
@@ -101,6 +124,10 @@ const appRouter = createBrowserRouter([
               {
                 path: "course/:id/lecture/:lectureId",
                 element: <EditLecture />,
+              },
+              {
+                path: "course/:courseId/lecture/:lectureId/quiz-preview",
+                element: <QuizPreviewPage />,
               },
             ],
           },
