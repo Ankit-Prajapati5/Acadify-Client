@@ -1,26 +1,30 @@
-import { useLocation, useNavigate, useParams } from "react-router-dom"; // useParams add kiya
-import { motion } from "framer-motion";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { motion, AnimatePresence } from "framer-motion";
 import Confetti from "react-confetti";
 import { useEffect, useState, useMemo } from "react";
+import { 
+  Trophy, RotateCcw, Eye, ChevronLeft, 
+  Medal, Zap, Award, Sparkles, Target, 
+  ArrowRight, Star
+} from "lucide-react";
 
 const QuizResultPage = () => {
   const { state } = useLocation();
   const navigate = useNavigate();
-  const { courseId, lectureId } = useParams(); // Params liye navigation ke liye
+  const { courseId, lectureId } = useParams();
 
   const score = state?.score || 0;
   const total = state?.total || 10;
-  const questions = state?.questions || []; // Review ke liye questions
-  const selectedAnswers = state?.selectedAnswers || {}; // Review ke liye answers
+  const questions = state?.questions || [];
+  const selectedAnswers = state?.selectedAnswers || {};
   const percentage = Math.round((score / total) * 100);
 
-  const [showGift, setShowGift] = useState(false);
   const [unwrapped, setUnwrapped] = useState(false);
   const [randomThought, setRandomThought] = useState("");
 
   const thoughtsDB = {
     perfect: [
-      "Outstanding! You mastered this topic like a champion 🚀",
+     "Outstanding! You mastered this topic like a champion 🚀",
       "Flawless victory! You are a subject matter expert now.",
       "God Mode Activated! Your focus is absolutely unbreakable.",
       "Pure brilliance! You didn't leave a single point behind.",
@@ -30,9 +34,12 @@ const QuizResultPage = () => {
       "You've reached the peak of the mountain today! 🏔️",
       "Absolutely unstoppable! You've conquered the quiz.",
       "The GOAT! Nobody is doing it like you right now. 🐐"
+
+
     ],
     excellent: [
-      "Strong work! You clearly know your stuff inside out. 💪",
+    
+"Strong work! You clearly know your stuff inside out. 💪",
       "Incredible! You're just a step away from perfection.",
       "High achiever alert! You crushed this one.",
       "Almost perfect! Great command over the concepts.",
@@ -42,9 +49,11 @@ const QuizResultPage = () => {
       "Top-shelf performance! You're outshining the rest.",
       "Great focus! You've grasped the core concepts well.",
       "You're on fire! Just a little polish and you'll be #1. ⚡"
+
     ],
     average: [
-      "Good effort! A little more revision and you'll be elite. 🙂",
+     
+"Good effort! A little more revision and you'll be elite. 🙂",
       "Steady progress. You're halfway to complete mastery.",
       "Not bad at all! You've got the basics down firmly.",
       "Decent attempt. Focus on the tricky parts next time.",
@@ -54,6 +63,7 @@ const QuizResultPage = () => {
       "The foundation is set. Now build the skyscraper! 🏗️",
       "Nice try! You have the logic, just refine the details.",
       "Balanced performance. Time to push for the 100%! 🎯"
+
     ],
     pushing: [
       "Every expert was once a beginner. Don't stop now! 💥",
@@ -66,121 +76,201 @@ const QuizResultPage = () => {
       "You've got this! Re-read the material and try again.",
       "Success is 99% perspiration. Keep sweating it out!",
       "Don't quit! Your breakthrough is right around the corner."
+
     ]
   };
 
-  const { performance, voiceText, category } = useMemo(() => {
-    if (percentage === 100) return { performance: "PERFECT 🔥", voiceText: "Perfect score! Incredible performance.", category: "perfect" };
-    if (percentage >= 70) return { performance: "EXCELLENT 💪", voiceText: "Excellent work! You are performing really well.", category: "excellent" };
-    if (percentage >= 40) return { performance: "AVERAGE 🙂", voiceText: "Nice attempt. Review the concepts again.", category: "average" };
-    return { performance: "KEEP PUSHING 💥", voiceText: "Don't give up. Practice makes progress.", category: "pushing" };
+  const { performance, voiceText, category, themeColor, glowColor } = useMemo(() => {
+    if (percentage === 100) return { performance: "PERFECT 🔥", voiceText: "Perfect score! Incredible.", category: "perfect", themeColor: "#22d3ee", glowColor: "rgba(34, 211, 238, 0.4)" };
+    if (percentage >= 70) return { performance: "EXCELLENT 💪", voiceText: "Excellent work!", category: "excellent", themeColor: "#a855f7", glowColor: "rgba(168, 85, 247, 0.4)" };
+    if (percentage >= 40) return { performance: "AVERAGE 🙂", voiceText: "Nice attempt.", category: "average", themeColor: "#eab308", glowColor: "rgba(234, 179, 8, 0.4)" };
+    return { performance: "KEEP PUSHING 💥", voiceText: "Keep practicing.", category: "pushing", themeColor: "#ef4444", glowColor: "rgba(239, 68, 68, 0.4)" };
   }, [percentage]);
 
   useEffect(() => {
     const thoughts = thoughtsDB[category];
-    const randomIndex = Math.floor(Math.random() * thoughts.length);
-    setRandomThought(thoughts[randomIndex]);
-
+    setRandomThought(thoughts[Math.floor(Math.random() * thoughts.length)]);
+    
     const utterance = new SpeechSynthesisUtterance(voiceText);
     utterance.rate = 1;
     speechSynthesis.speak(utterance);
-
     return () => speechSynthesis.cancel();
   }, [category, voiceText]);
 
   return (
-    <div className="min-h-screen pt-14 bg-gradient-to-br from-black via-zinc-900 to-black flex justify-center items-center p-6 relative overflow-hidden">
-      {percentage === 100 && <Confetti recycle={false} numberOfPieces={300} />}
+    <div className="min-h-screen bg-[#020203] text-white flex justify-center items-center p-4 md:p-6 relative overflow-hidden">
+      
+      {/* 🟢 AWESOME BACKGROUND ANIMATION */}
+      <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
+        {/* Animated Blobs */}
+        <motion.div
+          animate={{ x: [0, 100, 0], y: [0, 50, 0], rotate: [0, 360] }}
+          transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
+          className="absolute -top-[10%] -left-[10%] w-[500px] h-[500px] rounded-full"
+          style={{ background: `radial-gradient(circle, ${glowColor} 0%, transparent 70%)` }}
+        />
+        <motion.div
+          animate={{ x: [0, -100, 0], y: [0, -80, 0], rotate: [360, 0] }}
+          transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+          className="absolute -bottom-[10%] -right-[10%] w-[600px] h-[600px] rounded-full"
+          style={{ background: `radial-gradient(circle, ${glowColor} 0%, transparent 70%)` }}
+        />
+        {/* Subtle Grid Overlay */}
+        <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: `linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px)`, backgroundSize: '40px 40px' }} />
+      </div>
 
+      {/* Confetti for High Scores */}
+      {percentage >= 70 && (
+        <Confetti 
+          recycle={false} 
+          numberOfPieces={percentage === 100 ? 600 : 200} 
+          gravity={0.15} 
+          colors={[themeColor, '#ffffff', '#fbbf24']} 
+        />
+      )}
+
+      {/* 🟢 MAIN RESULT CARD */}
       <motion.div
-        initial={{ scale: 0.8, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-        transition={{ duration: 0.6 }}
-        className="backdrop-blur-2xl bg-white/10 border border-white/20 rounded-3xl shadow-2xl p-10 text-center w-full max-w-md text-white relative"
+        initial={{ scale: 0.8, opacity: 0, y: 40 }}
+        animate={{ scale: 1, opacity: 1, y: 0 }}
+        transition={{ type: "spring", stiffness: 100, damping: 15 }}
+        className="relative z-10 w-full max-w-[500px] bg-zinc-900/40 backdrop-blur-3xl border border-white/10 rounded-[2.5rem] p-6 md:p-10 shadow-[0_0_80px_rgba(0,0,0,0.8)] overflow-hidden"
+        style={{ boxShadow: `0 0 50px -10px ${glowColor}` }}
       >
-        <h1 className="text-xl font-bold mb-6 text-zinc-400 uppercase tracking-widest">Quiz Result</h1>
+        {/* Card Shine Effect */}
+        <div className="absolute -top-[150%] -left-[50%] w-[200%] h-[200%] rotate-45 bg-gradient-to-b from-white/[0.03] to-transparent pointer-events-none" />
 
-        <div className="relative w-40 h-40 mx-auto mb-6">
+        {/* Top Content */}
+        <div className="flex justify-between items-center mb-8">
+            <div className="text-left">
+                <p className="text-[10px] font-black uppercase tracking-[0.3em] text-zinc-500 mb-1">Session Data</p>
+                <h2 className="text-xl font-black italic tracking-tighter">SCORECARD</h2>
+            </div>
+            <div className="w-12 h-12 bg-zinc-800/50 rounded-2xl flex items-center justify-center border border-white/10">
+                <Target className="text-zinc-400" size={20} />
+            </div>
+        </div>
+
+        {/* Circular Progress Section */}
+        <div className="relative w-44 h-44 md:w-52 md:h-52 mx-auto mb-8">
           <svg className="w-full h-full transform -rotate-90">
-            <circle cx="80" cy="80" r="70" stroke="#27272a" strokeWidth="12" fill="transparent" />
+            <defs>
+                <filter id="glow">
+                    <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
+                    <feMerge>
+                        <feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/>
+                    </feMerge>
+                </filter>
+            </defs>
+            <circle cx="50%" cy="50%" r="42%" stroke="#111" strokeWidth="12" fill="transparent" />
             <motion.circle
-              cx="80" cy="80" r="70" stroke={percentage >= 70 ? "#22d3ee" : percentage >= 40 ? "#facc15" : "#ef4444"}
+              cx="50%" cy="50%" r="42%" 
+              stroke={themeColor}
               strokeWidth="12" fill="transparent"
-              strokeDasharray={440}
-              initial={{ strokeDashoffset: 440 }}
-              animate={{ strokeDashoffset: 440 - (440 * percentage) / 100 }}
-              transition={{ duration: 1.5, ease: "easeOut" }}
+              strokeDasharray="100 100"
+              initial={{ pathLength: 0 }}
+              animate={{ pathLength: percentage / 100 }}
+              transition={{ duration: 2, ease: "circOut" }}
               strokeLinecap="round"
+              filter="url(#glow)"
+              style={{ pathLength: percentage / 100, strokeDasharray: '264 264' }}
             />
           </svg>
           <div className="absolute inset-0 flex flex-col items-center justify-center">
-            <span className="text-3xl font-black">{percentage}%</span>
-            <span className="text-[10px] text-zinc-500 uppercase">{score}/{total} Correct</span>
+            <motion.span 
+              initial={{ opacity: 0 }} 
+              animate={{ opacity: 1 }} 
+              className="text-5xl md:text-6xl font-black tracking-tighter"
+            >
+              {percentage}%
+            </motion.span>
+            <span className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest bg-zinc-800/80 px-2 py-0.5 rounded-md">
+                {score} / {total} Correct
+            </span>
           </div>
         </div>
 
-        <motion.div initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.3 }} className="mb-4">
-          <span className={`px-5 py-2 rounded-full text-xs font-black shadow-lg uppercase tracking-tighter ${
-            category === 'perfect' ? 'bg-cyan-500 text-black' : 
-            category === 'excellent' ? 'bg-purple-600 text-white' : 
-            category === 'average' ? 'bg-yellow-500 text-black' : 'bg-zinc-700 text-white'
-          }`}>
-            {performance}
-          </span>
+        {/* Level Tag */}
+        <motion.div 
+            initial={{ y: 10, opacity: 0 }} 
+            animate={{ y: 0, opacity: 1 }} 
+            transition={{ delay: 0.5 }}
+            className="flex flex-col items-center gap-4 mb-8"
+        >
+            <div className="flex items-center gap-2 bg-white/5 border border-white/10 px-5 py-2 rounded-full shadow-2xl">
+                <Star size={14} className="fill-current" style={{ color: themeColor }} />
+                <span className="text-[11px] font-black tracking-[0.2em]">{performance}</span>
+            </div>
+            <p className="text-sm md:text-base text-zinc-300 font-medium italic leading-relaxed px-4">
+              "{randomThought}"
+            </p>
         </motion.div>
 
-        <motion.p
-          key={randomThought}
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.6 }}
-          className="text-sm text-zinc-300 mb-8 italic px-4"
-        >
-          "{randomThought}"
-        </motion.p>
+        {/* Special Unlock Section */}
+        <AnimatePresence>
+            {percentage === 100 && !unwrapped && (
+            <motion.div
+                layoutId="reward"
+                initial={{ opacity: 0 }} animate={{ opacity: 1 }}
+                whileHover={{ scale: 1.02 }}
+                onClick={() => setUnwrapped(true)}
+                className="mb-8 p-6 bg-gradient-to-br from-cyan-500/20 to-blue-600/10 rounded-[2rem] border border-cyan-500/30 cursor-pointer group relative"
+            >
+                <motion.div animate={{ rotate: [0, -5, 5, -5, 0] }} transition={{ repeat: Infinity, duration: 2 }}>
+                    <Award size={40} className="text-cyan-400 mx-auto mb-2 drop-shadow-[0_0_10px_rgba(34,211,238,0.5)]" />
+                </motion.div>
+                <p className="text-[10px] font-black uppercase tracking-widest text-cyan-500">Unwrap Achievement</p>
+            </motion.div>
+            )}
 
-        {percentage === 100 && !unwrapped && (
-          <motion.div
-            animate={{ rotate: [0, -10, 10, -10, 10, 0] }}
-            transition={{ repeat: Infinity, duration: 2 }}
-            onClick={() => {
-              setUnwrapped(true);
-              setShowGift(true);
-            }}
-            className="cursor-pointer text-6xl mb-6 hover:scale-110 transition-transform"
-          >
-            🎁
-          </motion.div>
-        )}
+            {unwrapped && (
+            <motion.div
+                layoutId="reward"
+                initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }}
+                className="mb-8 p-5 bg-cyan-500/10 border border-cyan-500/30 rounded-[2rem] flex items-center gap-5 text-left"
+            >
+                <div className="w-14 h-14 bg-cyan-500 rounded-2xl flex items-center justify-center shrink-0 shadow-lg shadow-cyan-500/40">
+                    <Medal size={30} className="text-black" />
+                </div>
+                <div>
+                    <h2 className="font-black text-cyan-400 text-sm tracking-tight uppercase">Mastery Badge Unlocked</h2>
+                    <p className="text-zinc-500 text-[9px] font-bold uppercase mt-1">Synced to your learning profile</p>
+                </div>
+            </motion.div>
+            )}
+        </AnimatePresence>
 
-        {unwrapped && (
-          <motion.div
-            initial={{ scale: 0, rotate: -20 }}
-            animate={{ scale: 1, rotate: 0 }}
-            className="mb-6 p-4 bg-cyan-500/10 border border-cyan-500/30 rounded-2xl"
-          >
-            <h2 className="font-bold text-cyan-400">Master Badge Unlocked! 🏆</h2>
-            <p className="text-[10px] text-zinc-400 mt-1 uppercase">Added to your profile</p>
-          </motion.div>
-        )}
-
-        {/* 🔥 NEW BUTTON SECTION */}
-        <div className="flex flex-col gap-3">
+        {/* Action Buttons */}
+        <div className="space-y-3">
           <button
             onClick={() => navigate(`/course/${courseId}/lecture/${lectureId}/quiz/review`, { state: { questions, selectedAnswers, score, total } })}
-            className="w-full py-3 bg-cyan-500 text-black font-black rounded-xl hover:bg-cyan-400 transition-colors uppercase text-sm tracking-tighter shadow-lg shadow-cyan-500/20"
+            className="group w-full flex items-center justify-center gap-3 py-4 bg-white text-black font-black rounded-2xl hover:bg-zinc-200 transition-all text-xs uppercase tracking-[0.2em] shadow-xl active:scale-[0.98]"
           >
-            Review Performance
+            <Eye size={18} /> Review Performance <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
           </button>
 
-          <button
-            onClick={() => navigate(-2)}
-            className="w-full py-3 bg-white/5 border border-white/10 text-white font-black rounded-xl hover:bg-white/10 transition-colors uppercase text-sm tracking-tighter"
-          >
-            Back to Course
-          </button>
+          <div className="grid grid-cols-2 gap-3">
+              <button
+                onClick={() => navigate(`/course/${courseId}/lecture/${lectureId}`)}
+                className="flex items-center justify-center gap-2 py-4 bg-zinc-800/50 text-white font-bold rounded-2xl border border-white/5 hover:bg-zinc-800 transition-all text-[10px] uppercase tracking-widest active:scale-95"
+              >
+                <ChevronLeft size={16} /> Dashboard
+              </button>
+              <button
+                onClick={() => navigate(-1)}
+                className="flex items-center justify-center gap-2 py-4 bg-zinc-800/50 text-white font-bold rounded-2xl border border-white/5 hover:bg-zinc-800 transition-all text-[10px] uppercase tracking-widest active:scale-95"
+              >
+                <RotateCcw size={14} /> Try Again
+              </button>
+          </div>
         </div>
       </motion.div>
+
+      {/* Footer Branding */}
+      <div className="absolute bottom-6 opacity-20 flex items-center gap-2 pointer-events-none">
+          <Zap size={14} />
+          <span className="text-[10px] font-black uppercase tracking-[0.4em]">Acadify Neural Engine</span>
+      </div>
     </div>
   );
 };
