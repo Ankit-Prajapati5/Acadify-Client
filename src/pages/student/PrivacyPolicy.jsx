@@ -54,7 +54,7 @@ const PrivacyPolicy = () => {
           </h1>
           
           <p className="text-sm md:text-base text-slate-600 dark:text-zinc-400 font-medium max-w-sm mx-auto lg:mx-0 leading-relaxed">
-            Acadify par aapki privacy hamari priority hai. Transparency hamara mool mantra hai.
+            Proxima par aapki privacy hamari priority hai. Transparency hamara mool mantra hai.
           </p>
 
           <div className="pt-4">
@@ -90,7 +90,7 @@ const PrivacyPolicy = () => {
             </div>
             <div className="flex-1">
               <p className="text-xs text-zinc-400 leading-relaxed">
-                "Acadify use karke aap hamari latest cookies aur data processing terms se agree karte hain."
+                "Proxima use karke aap hamari latest cookies aur data processing terms se agree karte hain."
               </p>
               <div className="mt-2 flex gap-6 text-[9px] font-black uppercase tracking-widest">
                 <span className="text-blue-500">Last Updated: Jan 2026</span>

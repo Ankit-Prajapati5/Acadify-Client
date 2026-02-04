@@ -30,7 +30,7 @@ const AboutUs = () => {
           </h1>
           
           <p className="text-sm md:text-base text-slate-600 dark:text-zinc-400 font-medium max-w-md mx-auto lg:mx-0">
-            Acadify isn't just a platform; it's an ecosystem designed to bridge the gap between academic theory and industry reality.
+            Proxima isn't just a platform; it's an ecosystem designed to bridge the gap between academic theory and industry reality.
           </p>
 
           <div className="pt-4">

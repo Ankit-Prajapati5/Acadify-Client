@@ -1,4 +1,4 @@
-const CACHE_NAME = "acadify-v2";
+const CACHE_NAME = "proxima-v2";
 
 self.addEventListener("install", (event) => {
   self.skipWaiting();

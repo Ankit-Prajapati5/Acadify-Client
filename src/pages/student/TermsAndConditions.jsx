@@ -20,12 +20,12 @@ const TermsAndConditions = () => {
   {
     icon: <FileCode size={22} />, // Import FileCode from lucide-react
     title: "Intellectual Property",
-    content: "Acadify ka saara content (videos, notes) copyrighted hai. Isse copy karna illegal hai."
+    content: "Proxima ka saara content (videos, notes) copyrighted hai. Isse copy karna illegal hai."
   },
   {
     icon: <ShieldAlert size={22} />,
     title: "Termination",
-    content: "Rules break karne par Acadify aapka access bina kisi prior notice ke cancel kar sakta hai."
+    content: "Rules break karne par Proxima aapka access bina kisi prior notice ke cancel kar sakta hai."
   }
 ];
   return (
@@ -53,7 +53,7 @@ const TermsAndConditions = () => {
           </h1>
           
           <p className="text-sm md:text-base text-slate-600 dark:text-zinc-400 font-medium max-w-sm mx-auto lg:mx-0 leading-relaxed">
-            Acadify use karne se pehle hamare rules ko dhyan se padhein. Ye humare aur aapke beech ka ek legal contract hai.
+            Proxima use karne se pehle hamare rules ko dhyan se padhein. Ye humare aur aapke beech ka ek legal contract hai.
           </p>
 
           <div className="pt-4">

@@ -14,7 +14,7 @@ const Footer = () => {
           {/* 1. Brand & Trust Section */}
           <div className="space-y-5">
             <h2 className="text-3xl font-black text-white tracking-tighter italic">
-              Acadify<span className="text-blue-500">.</span>
+              Proxima<span className="text-blue-500">.</span>
             </h2>
             <p className="text-sm leading-relaxed text-zinc-500">
               High-quality digital learning for the next generation of creators and engineers.
@@ -71,7 +71,7 @@ const Footer = () => {
                </div>
                <div className="flex items-center gap-3 text-xs text-zinc-500">
                   <Mail size={16} className="text-blue-500" />
-                  <span>officialacadify@gmail.com</span>
+                  <span>officialproxima@gmail.com</span>
                </div>
                {/* Razorpay Trust Badge or Payment Icons can go here */}
                <div className="pt-2 opacity-50 grayscale hover:grayscale-0 transition-all">
@@ -84,7 +84,7 @@ const Footer = () => {
         {/* Bottom Bar */}
         <div className="pt-8 border-t border-zinc-900/50 flex flex-col md:flex-row justify-between items-center gap-4 text-center md:text-left">
           <p className="text-[11px] font-medium tracking-wide text-zinc-600">
-            © {currentYear} <span className="text-zinc-300">Acadify Inc.</span> All rights reserved.
+            © {currentYear} <span className="text-zinc-300">Proxima Inc.</span> All rights reserved.
           </p>
           <div className="flex items-center gap-2 text-[10px] text-zinc-500 bg-zinc-900/30 px-3 py-1 rounded-full border border-zinc-800">
              <Globe size={12} />

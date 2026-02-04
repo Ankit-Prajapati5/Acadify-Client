@@ -79,7 +79,7 @@ const Roadmap = () => {
                 <div className="text-center mb-16 animate-in fade-in duration-700">
                     <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/20 mb-6">
                         <Telescope size={14} className="text-blue-600" />
-                        <span className="text-[10px] font-black uppercase tracking-widest text-blue-600">Acadify Roadmap</span>
+                        <span className="text-[10px] font-black uppercase tracking-widest text-blue-600">Proxima Roadmap</span>
                     </div>
                     <h1 className="text-5xl md:text-7xl font-black tracking-tighter mb-4">You Design, <br/> We <span className="text-blue-600">Build.</span></h1>
                 </div>
@@ -198,12 +198,12 @@ const Roadmap = () => {
 
                         <h2 className="text-3xl font-black tracking-tighter mb-2">Wait a second!</h2>
                         <p className="text-xs text-zinc-500 dark:text-zinc-400 mb-8 leading-relaxed">
-                            Aapka vote bohot keemti hai. Please login karke Acadify community ka hissa banein.
+                            Aapka vote bohot keemti hai. Please login karke Proxima community ka hissa banein.
                         </p>
 
                         <div className="space-y-3">
                             <Button onClick={() => navigate("/login")} className="w-full h-14 rounded-2xl bg-blue-600 text-white font-black uppercase tracking-widest text-[10px]">
-                                <LogIn size={16} className="mr-2" /> Login to Acadify
+                                <LogIn size={16} className="mr-2" /> Login to Proxima
                             </Button>
                             <button onClick={() => setIsLoginModalOpen(false)} className="text-[10px] font-black uppercase tracking-widest text-zinc-400 hover:text-zinc-600">Maybe Later</button>
                         </div>

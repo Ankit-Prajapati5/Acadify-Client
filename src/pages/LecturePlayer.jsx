@@ -579,7 +579,7 @@ const LecturePlayer = () => {
                 </p>
                 <div className="h-[1px] w-full bg-white/10 my-1" />
                 <p className="text-[7px] md:text-[9px] font-black text-orange-500 uppercase tracking-[0.3em]">
-                  acadifynew.vercel.app
+                  proxima.edoroedu.com
                 </p>
               </div>
             </div>

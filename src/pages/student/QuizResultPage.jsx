@@ -269,7 +269,7 @@ const QuizResultPage = () => {
       {/* Footer Branding */}
       <div className="absolute bottom-6 opacity-20 flex items-center gap-2 pointer-events-none">
           <Zap size={14} />
-          <span className="text-[10px] font-black uppercase tracking-[0.4em]">Acadify Neural Engine</span>
+          <span className="text-[10px] font-black uppercase tracking-[0.4em]">Proxima Neural Engine</span>
       </div>
     </div>
   );

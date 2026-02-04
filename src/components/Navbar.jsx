@@ -36,7 +36,7 @@ const MobileNavbar = ({ user, logoutHandler, goToAuth, isLoggingOut, pathname })
       <SheetContent side="right" className="flex flex-col gap-6 w-[300px] dark:bg-[#0A0A0A]">
         <SheetHeader className="flex flex-row justify-between items-center pr-6">
           <SheetTitle className="font-black text-xl italic uppercase">
-            Acadify<span className="text-blue-600">.</span>
+            Proxima<span className="text-blue-600">.</span>
           </SheetTitle>
           <DarkMode />
         </SheetHeader>
@@ -146,7 +146,7 @@ const logoutHandler = async () => {
             <School size={24} className="text-white" />
           </div>
           <span className="font-black text-2xl tracking-tighter uppercase italic">
-            Acadify<span className="text-blue-600">.</span>
+            Proxima<span className="text-blue-600">.</span>
           </span>
         </Link>
 
@@ -207,7 +207,7 @@ const logoutHandler = async () => {
       {/* 📱 MOBILE VIEW (FIXED) */}
       <div className="flex md:hidden items-center justify-between h-full px-4">
         <Link to="/" className="font-black text-xl italic uppercase tracking-tighter">
-          Acadify<span className="text-blue-600">.</span>
+          Proxima<span className="text-blue-600">.</span>
         </Link>
 
         {/* Home + Hamburger Container */}

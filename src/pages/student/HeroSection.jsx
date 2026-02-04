@@ -8,7 +8,7 @@ import { motion, AnimatePresence } from "framer-motion";
 const HeroSection = () => {
   const [keyword, setKeyword] = useState("");
  const [isIntroActive, setIsIntroActive] = useState(() => {
-  return !sessionStorage.getItem("acadifySplashShown");
+  return !sessionStorage.getItem("proximaSplashShown");
 });
 
   const navigate = useNavigate();
@@ -18,7 +18,7 @@ const HeroSection = () => {
 
   const timer = setTimeout(() => {
     setIsIntroActive(false);
-    sessionStorage.setItem("acadifySplashShown", "true");
+    sessionStorage.setItem("proximaSplashShown", "true");
   }, 2000);
 
   return () => clearTimeout(timer);
@@ -109,7 +109,7 @@ const HeroSection = () => {
                 animate={{ opacity: 1 }}
                 className="text-yellow-500 font-black text-3xl sm:text-4xl uppercase mt-8 tracking-widest"
               >
-                Acadify
+                Proxima
               </motion.h2>
             </motion.div>
           </motion.div>

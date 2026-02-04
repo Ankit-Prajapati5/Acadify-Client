@@ -54,7 +54,7 @@ const ContactUs = () => {
                 </div>
                 <div>
                   <p className="text-[10px] text-zinc-400 uppercase font-black tracking-widest">Email Us</p>
-                  <p className="font-bold text-sm">officialacadify@gmail.com</p>
+                  <p className="font-bold text-sm">officialproxima@gmail.com</p>
                 </div>
              </div>
           </div>

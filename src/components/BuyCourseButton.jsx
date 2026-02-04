@@ -16,7 +16,7 @@ const BuyCourseButton = ({ courseId, onPaymentSuccess }) => {
       key: RAZORPAY_KEY_ID,
       amount: order.amount,
       currency: order.currency,
-      name: "Acadify",
+      name: "Proxima",
       description: "Course Purchase",
       order_id: order.id,
 
