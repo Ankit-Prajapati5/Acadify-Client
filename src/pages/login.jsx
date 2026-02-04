@@ -66,7 +66,7 @@ const Login = () => {
         
         const loginData = {
           ...loginInput,
-          role: loginInput.email === "officialproxima@gmail.com" ? "instructor" : "student"
+          role: loginInput.email === "proximahello@gmail.com" ? "instructor" : "student"
         };
 
         const res = await loginUser(loginData).unwrap();
@@ -78,7 +78,7 @@ const Login = () => {
         
         const registrationData = {
           ...signupInput,
-          role: signupInput.email === "officialproxima@gmail.com" ? "instructor" : "student"
+          role: signupInput.email === "proximahello@gmail.com" ? "instructor" : "student"
         };
 
         await registerUser(registrationData).unwrap();

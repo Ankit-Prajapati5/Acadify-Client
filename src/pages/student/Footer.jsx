@@ -71,7 +71,7 @@ const Footer = () => {
                </div>
                <div className="flex items-center gap-3 text-xs text-zinc-500">
                   <Mail size={16} className="text-blue-500" />
-                  <span>officialproxima@gmail.com</span>
+                  <span>proximahello@gmail.com</span>
                </div>
                {/* Razorpay Trust Badge or Payment Icons can go here */}
                <div className="pt-2 opacity-50 grayscale hover:grayscale-0 transition-all">
